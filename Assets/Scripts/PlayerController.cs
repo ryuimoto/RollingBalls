@@ -1,18 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 20; // 動く速さ
+    public float speed;// 動く速さ
+    public Text scoreText;
+    public Text winText;
+    
     private Rigidbody rb; // Rigidbody
-
+    private int score;
 
     // Start is called before the first frame update
     void Start()
     {
         // Rigidbody を取得
-        rb = GetComponent<Rigidbody>();    
+        rb = GetComponent<Rigidbody>();
+
+        score = 0;
+        SetCountText();
+        winText.text = "";
     }
 
     // Update is called once per frame
@@ -28,5 +36,26 @@ public class PlayerController : MonoBehaviour
         // Ridigbody に力を与えて玉を動かす
         rb.AddForce(movement * speed);
     
+    }
+
+    void OnTriggerEnter(Collider other){
+        if(other.gameObject.CompareTag("Pick Up")){
+            other.gameObject.SetActive(false);
+
+            score = score + 1;
+            SetCountText();
+        }
+    }
+
+    void SetCountText(){
+       // スコアの表示を更新
+        scoreText.text = "Count: " + score.ToString();
+
+        // すべての収集アイテムを獲得した場合
+        if (score >= 12)
+        {
+            // リザルトの表示を更新
+            winText.text = "You Win!";
+        }
     }
 }
